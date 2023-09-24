@@ -6,6 +6,9 @@ app = Flask(__name__)
 model = BartForConditionalGeneration.from_pretrained('facebook/bart-large-cnn')
 tokenizer = BartTokenizer.from_pretrained('facebook/bart-large-cnn')
 
+@app.route('/health_check', methods = ['GET'])
+def check():
+    return "Yay! Flask App is running"
 
 @app.route('/', methods = ['GET', 'POST'])
 def index():
@@ -25,7 +28,8 @@ def index():
         summary = " ".join([tokenizer.decode(g, skip_special_tokens=True, clean_up_tokenization_spaces=False) for g in summary_ids])
 
         return render_template('index.html', summary=summary, text=text, show_summary=True, title=title)
-
+    else:
+        return "Http Method not recognized"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug = True)
